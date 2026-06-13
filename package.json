@@ -1,0 +1,6 @@
+{
+  "name": "movie-mosaic",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Browser-based face mosaic video editor."
+}

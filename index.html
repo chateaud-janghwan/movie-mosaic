@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Movie Mosaic</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <aside class="side-panel">
+        <div class="brand">
+          <div class="brand-mark">MM</div>
+          <div>
+            <h1>Movie Mosaic</h1>
+            <p>얼굴 보호 모자이크 편집기</p>
+          </div>
+        </div>
+
+        <label class="upload-zone" for="videoInput">
+          <input id="videoInput" type="file" accept="video/*" />
+          <span class="upload-icon">+</span>
+          <strong>동영상 업로드</strong>
+          <small id="fileName">MP4, MOV, WebM</small>
+        </label>
+
+        <section class="panel-section">
+          <div class="section-title">
+            <h2>보호할 얼굴</h2>
+            <span id="faceCount">0명</span>
+          </div>
+          <div id="protectedFaces" class="face-list empty">
+            <span>타임바에서 얼굴을 선택하세요</span>
+          </div>
+        </section>
+
+        <section class="panel-section compact">
+          <div class="section-title">
+            <h2>모자이크</h2>
+          </div>
+          <label class="slider-row">
+            <span>강도</span>
+            <input id="pixelSize" type="range" min="8" max="42" value="22" />
+            <b id="pixelSizeValue">22</b>
+          </label>
+          <label class="slider-row">
+            <span>일치율</span>
+            <input id="matchThreshold" type="range" min="35" max="88" value="62" />
+            <b id="matchThresholdValue">62</b>
+          </label>
+        </section>
+
+        <section class="panel-section status-card">
+          <div id="detectorState" class="state-dot">대기 중</div>
+          <progress id="renderProgress" value="0" max="100"></progress>
+          <p id="statusText">동영상을 선택하면 편집을 시작합니다.</p>
+        </section>
+      </aside>
+
+      <section class="workspace">
+        <div class="topbar">
+          <div class="segmented">
+            <button id="detectModeBtn" class="active" type="button">자동 감지</button>
+            <button id="manualModeBtn" type="button">직접 지정</button>
+          </div>
+          <div class="toolbar">
+            <button id="scanBtn" type="button" disabled>얼굴 찾기</button>
+            <button id="clearFacesBtn" type="button" disabled>초기화</button>
+            <button id="renderBtn" class="primary" type="button" disabled>모자이크 생성</button>
+            <a id="downloadLink" class="download hidden" download="movie-mosaic.webm">다운로드</a>
+          </div>
+        </div>
+
+        <div class="stage-wrap">
+          <div id="stage" class="stage">
+            <video id="video" playsinline muted></video>
+            <canvas id="overlay"></canvas>
+            <canvas id="renderCanvas"></canvas>
+            <div id="emptyState" class="empty-state">
+              <strong>동영상을 올려주세요</strong>
+              <span>업로드 후 타임바를 움직여 보호할 얼굴을 고릅니다</span>
+            </div>
+          </div>
+        </div>
+
+        <section id="faceBoard" class="face-board hidden" aria-label="얼굴 분류">
+          <div class="board-header">
+            <div>
+              <h2>감지된 얼굴 분류</h2>
+              <p>카드를 드래그해서 모자이크할 얼굴과 보호할 얼굴을 나누세요.</p>
+            </div>
+            <span id="scanSummary">0명 감지</span>
+          </div>
+          <div class="drop-grid">
+            <div class="drop-zone mosaic-zone" data-category="mosaic">
+              <div class="drop-title">
+                <strong>모자이크</strong>
+                <span>기본값</span>
+              </div>
+              <div id="mosaicFaces" class="candidate-list"></div>
+            </div>
+            <div class="drop-zone protect-zone" data-category="protect">
+              <div class="drop-title">
+                <strong>보호</strong>
+                <span>제외</span>
+              </div>
+              <div id="protectedFacesBoard" class="candidate-list"></div>
+            </div>
+          </div>
+        </section>
+
+        <section id="comparePanel" class="compare-panel hidden" aria-label="전후 비교">
+          <div class="compare-cell">
+            <span>원본</span>
+            <canvas id="originalPreview"></canvas>
+          </div>
+          <div class="compare-cell">
+            <span>모자이크</span>
+            <canvas id="mosaicPreview"></canvas>
+          </div>
+        </section>
+
+        <div class="timeline-card">
+          <div class="time-row">
+            <button id="playBtn" class="icon-btn" type="button" disabled>▶</button>
+            <span id="currentTime">00:00.0</span>
+            <input id="timeline" type="range" min="0" max="0" step="0.01" value="0" disabled />
+            <span id="duration">00:00.0</span>
+          </div>
+          <div class="hint-row">
+            <span id="selectionHint">얼굴을 찾은 뒤 박스를 클릭하면 보호 목록에 추가됩니다.</span>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
